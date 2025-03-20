@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("MissingInflatedId")
-
+    //TODO: ability to add words to block within the app
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
