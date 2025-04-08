@@ -3,6 +3,7 @@ package Services
 import android.accessibilityservice.AccessibilityService
 
 import android.app.admin.DevicePolicyManager
+import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.util.Log
 
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
 import com.tortel.blockerimadeyippee.MainActivity
 import com.tortel.blockerimadeyippee.LockDownTime
 import com.tortel.blockerimadeyippee.MainActivity.Companion.isLocked
@@ -41,11 +43,15 @@ class MyAccessibilityService : AccessibilityService() {
             val text = extractAllTextFromScreen().toString().lowercase()
 
             if (ignoredApps.any { app.contains(it) }) {
-                if (text.contains("turning on ultra battery saver...", ignoreCase = true)){
-                    startLockDown(LockDownTime, "Turning on Ultra Battery")
-                }
-
                 return
+            }
+
+//            // Check if Instagram is open
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                if (getForegroundApp(this)!!.contains("vending")) {
+                    Toast.makeText(this, "playstore is running!", Toast.LENGTH_SHORT).show()
+                    Log.d("INSTAGRAM", "playstore is running!")
+                }
             }
 
             //snapchat
@@ -56,13 +62,13 @@ class MyAccessibilityService : AccessibilityService() {
                 Log.d("SNAPCHAT", "$topSnapchatWord $topSnapchatWord2")
                 if (topSnapchatWord != null && !text.contains("send to")){
                     if (topSnapchatWord.contains("stories", ignoreCase = true) || topSnapchatWord.contains("spotlight", ignoreCase = true)){
-                            startLockDown(LockDownTime, "stories")
-                            return
-                        }
+                        startLockDown(LockDownTime, "snapchat scrolling")
+                        return
+                    }
                 }
                 if (topSnapchatWord2 != null && !text.contains("send to")){
                     if (topSnapchatWord2.contains("stories", ignoreCase = true) || topSnapchatWord2.contains("spotlight", ignoreCase = true)){
-                        startLockDown(LockDownTime, "stories")
+                        startLockDown(LockDownTime, "snapchat scrolling")
                         return
                     }
                 }
@@ -72,7 +78,7 @@ class MyAccessibilityService : AccessibilityService() {
             //yt
             if (app.contains("youtube")){
                 currentApp = "youtube"
-                if (isShortsButtonClicked()){
+                if (isOnShortsPage()){
                    startLockDown(LockDownTime, "shorts")
                 }
                 return
@@ -122,7 +128,7 @@ class MyAccessibilityService : AccessibilityService() {
         startActivity(appIntent)//open the app
     }
 
-    private fun isShortsButtonClicked(): Boolean {
+    private fun isOnShortsPage(): Boolean {
         val shortsButtonText = listOf("shorts")
         val allwords = extractAllTextFromScreen().split(", ")
 
@@ -136,6 +142,24 @@ class MyAccessibilityService : AccessibilityService() {
         }
 
         return false
+    }
+
+    fun getForegroundApp(context: Context): String? {
+        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val time = System.currentTimeMillis()
+        val stats = usageStatsManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_DAILY,
+            time - 1000 * 1000,
+            time
+        )
+
+        stats?.let {
+            if (it.isNotEmpty()) {
+                it.sortByDescending { it.lastTimeUsed }
+                return it[0].packageName
+            }
+        }
+        return null
     }
 
     private fun isOnShortsPage(event: AccessibilityEvent?): Boolean {

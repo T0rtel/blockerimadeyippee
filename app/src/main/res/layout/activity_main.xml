@@ -37,6 +37,18 @@
         android:text="Grant background Permissions (so it works in the background)" />
 
     <Button
+        android:id="@+id/usage_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_centerHorizontal="false"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:rotationX="0"
+        android:text="Grant Usage stats permission" />
+
+    <Button
         android:id="@+id/feeling_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

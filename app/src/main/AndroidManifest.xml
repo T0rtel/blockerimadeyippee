@@ -50,7 +50,6 @@
         </activity>
 
         <service android:name="Services.AppMonitorService" />
-        <service android:name="Services.MyForegroundService" />
         <service android:name="Services.CountDownService"
             tools:ignore="Instantiatable" />
 

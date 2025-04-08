@@ -26,20 +26,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.tortel.blockerimadeyippee.Reciever.MyDeviceAdminReceiver
-import com.tortel.blockerimadeyippee.ui.theme.BlockerIMadeYippeeTheme
 import kotlinx.coroutines.Job
 import kotlin.random.Random
 
@@ -261,24 +251,34 @@ class MainActivity : ComponentActivity() {
             )
         }
 
+        val usage_statsbtn: Button = findViewById(R.id.usage_stats)
+        usage_statsbtn.setOnClickListener {
+            if (!hasUsageStatsPermission()) {
+                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                startActivity(intent)
+            } else {
+                Log.d("USAGESTATS", "Permission already granted")
+            }
+        }
+
         val feelingdownbtn: Button = findViewById(R.id.feeling_down)
         feelingdownbtn.setOnClickListener {
             LockDownStarted(Random.nextInt(15 , 101) * 60 * 1000L)
         }
 
         // Check if battery optimization is enabled
-        if (isBatteryOptimizationEnabled(this@MainActivity)) {
-            // Show a dialog to the user
-            AlertDialog.Builder(this@MainActivity)
-                .setTitle("Disable Battery Optimization")
-                .setMessage("To ensure the app works correctly, please disable battery optimization for this app.")
-                .setPositiveButton("Go to Settings") { _, _ ->
-                    // Open battery optimization settings
-                    requestDisableBatteryOptimization(this@MainActivity)
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
+//        if (isBatteryOptimizationEnabled(this@MainActivity)) {
+//            // Show a dialog to the user
+//            AlertDialog.Builder(this@MainActivity)
+//                .setTitle("Disable Battery Optimization")
+//                .setMessage("To ensure the app works correctly, please disable battery optimization for this app.")
+//                .setPositiveButton("Go to Settings") { _, _ ->
+//                    // Open battery optimization settings
+//                    requestDisableBatteryOptimization(this@MainActivity)
+//                }
+//                .setNegativeButton("Cancel", null)
+//                .show()
+//        }
     }
     fun requestDisableBatteryOptimization(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

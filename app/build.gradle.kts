@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.tortel.blockerimadeyippee"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.tortel.blockerimadeyippee"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -66,4 +66,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+//    implementation(libs.androidx.activity)       // Downgraded
+//    implementation(libs.androidx.activity.compose.v190)
+//    implementation(libs.androidx.activity.ktx)
+//    implementation(libs.androidx.core.ktx.v1120)          // Downgraded
+//    implementation("androidx.core:core:1.12.0")
 }
